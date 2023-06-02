@@ -19,52 +19,20 @@ import {
   Inter_400Regular,
 } from "@expo-google-fonts/inter";
 import AuthContext from "../context/AuthContext";
-import * as WebBrowser from 'expo-web-browser';
-import * as Google from 'expo-auth-session/providers/google';
-import secretTokens from "../tokens/SecretTokens";
+import { MaterialIcons } from '@expo/vector-icons';
+import AppPreferencesContext from "../context/AppPreferencesContext";
 
 
-WebBrowser.maybeCompleteAuthSession();
+
+
 
 const LoginScreen = ({ navigation }) => {
     
-    const { password, setPassword, handleLogin, email, setEmail, loading,loginOrRegister} = useContext(AuthContext);
-    const [token, setToken] = useState("");
-    const [userInfo, setUserInfo] = useState(null);
-    const [request, response, promptAsync] = Google.useAuthRequest(secretTokens.googleAuthTokens);
+    const { password, setPassword, handleLogin, email, setEmail, loading} = useContext(AuthContext);
+
+    const {theme,language} = useContext(AppPreferencesContext);
     
     
-    useEffect(() => {
-      if (response?.type === 'success') {
-        const { authentication } = response;
-        const { accessToken } = authentication;
-        setToken(accessToken);
-        getUserInfo(accessToken);
-      }
-    }, [response]);
-
-
-    
-    const getUserInfo = async (accessToken) => {
-      const userInfoResponse = await fetch(
-        "https://www.googleapis.com/userinfo/v2/me",
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
-      const userInfo = await userInfoResponse.json();
-      setUserInfo(userInfo);
-      console.log(userInfo);
-      loginOrRegister(userInfo);
-    };
-
-    const loginWithGoogle = async () => {
-      try {
-        await promptAsync();
-      } catch (err) {
-        console.log(err);
-      }
-    };
 
 
   let [fontsLoaded] = useFonts({
@@ -82,11 +50,11 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <>
-      <StatusBar style="dark" />
+      <StatusBar style="light" />
       <SafeAreaView style={styles.topWrapper}>
         <View style={styles.imageAndTitleWrapper}>
           <Image
-            source={require("../assets/cuttedicon.png")}
+            source={require("../assets/newVisionGPTIcon.png")}
             style={styles.image}
           />
           <Text style={styles.welcomeText}>Welcome{'\n'}Back!</Text>
@@ -95,7 +63,7 @@ const LoginScreen = ({ navigation }) => {
       <View style={styles.bottomWrapper}>
         <View style={styles.gradientContainer}>
           <LinearGradient
-            colors={["white", "rgba(157,154,253,1)"]}
+            colors={["white","white","white","white"]}
             style={styles.gradient}
           >
             <Text style={styles.registerText}>{loading ? 'Logging in..' : 'Login' }</Text>
@@ -103,13 +71,14 @@ const LoginScreen = ({ navigation }) => {
                 loading === false &&
                 <>
             <Text style={styles.registerTextSub}>Access your account</Text>
-            
+            <View style={{marginTop:40}} />
                 <View style={styles.registerInfoWrapper}>
-              <View style={styles.emailTextTitle}>
+                
+                <View style={styles.emailTextTitle}>
                 <Text style={styles.emailText}>Email</Text>
-              </View>
+                </View>
 
-              <View style={styles.textInputWrapper}>
+              
                 <View style={styles.textInputWrapperEmail}>
                   <TextInput
                     inputMode="email"
@@ -119,18 +88,16 @@ const LoginScreen = ({ navigation }) => {
                     value={email}
                     onChangeText={text => setEmail(text)}
                   />
+                  <MaterialIcons name="mail" style={{marginRight:20}} color={'black'} size={20} />
                 </View>
-                <Image
-                  source={require("../assets/emailicon.png")}
-                  style={styles.inputEmailIcon}
-                />
-              </View>
+              
 
-              <View style={styles.emailTextTitle}>
+              
+                <View style={styles.emailTextTitle}>
                 <Text style={styles.emailText}>Password</Text>
-              </View>
-
-              <View style={styles.textInputWrapper}>
+                </View>
+            
+              
                 <View style={styles.textInputWrapperEmail}>
                   <TextInput
                     style={styles.emailInput}
@@ -140,81 +107,20 @@ const LoginScreen = ({ navigation }) => {
                     value={password}
                     onChangeText={text => setPassword(text)}
                   />
+                  <MaterialIcons name="lock" style={{marginRight:20}} color={'black'} size={20} />
                 </View>
-                <Image
-                  source={require("../assets/passwordicon.png")}
-                  style={styles.inputEmailIcon}
-                />
-                
-              </View>
+             
               
-              
-
               <View style={styles.registerButtonWrapper}>
                 <TouchableOpacity style={styles.registerButtonEmail}
                  onPress={handleLogin}
                 disabled={loading ? true : false}>
-                  <LinearGradient
-                    colors={[        
-                    "rgba(115,114,253,1)",
-                    '#2A2F4F',
-                    ]}
-                    start={[0,0]}
-                    end={[1,1]}
-                    style={styles.gradientButton}
-                  >
                     <Text style={styles.registerButtonTextEmail}>Login</Text>
-                  </LinearGradient>
+                    <MaterialIcons name="arrow-forward" color={'white'} size={20} />
                 </TouchableOpacity>
               </View>
               <View style={styles.divider}/>
-              <Text style={styles.continueWithText}>Or login with </Text>
-
-              <View style={styles.googleAppleButtonWrapper}>
-              <LinearGradient
-                    colors={[        
-                        'white',
-                        "white",
-                    ]}
-                    start={[0,0]}
-                    end={[1,1]}
-                    style={styles.googleButtonGradient}
-                  >
-
-                    <TouchableOpacity style={styles.googleButton}
-                            disabled={!request}
-                            onPress={loginWithGoogle
-                            }
-
-
-                    >
-                        <Image source={require('../assets/googleicon.png')} style={styles.googleicon}/>
-                        <Text style={styles.googleButtonText}>Google</Text>
-                        </TouchableOpacity>
-
-                        </LinearGradient>
-                    
-                        <LinearGradient
-                    colors={[        
-                        'black',
-                        "black",
-                    ]}
-                    start={[0,0]}
-                    end={[1,1]}
-                    style={styles.googleButtonGradient}
-                  >
-                        
-                    <TouchableOpacity style={styles.appleButton}>
-                        <Image source={require('../assets/appleiconwhitenew.png')} resizeMode="contain" style={styles.appleicon}/>
-                        <Text style={styles.appleButtonText}>Apple</Text>
-                        </TouchableOpacity>
-                        
-                        </LinearGradient>
-                        
-                
-            
-              </View>
-              
+                      
               <TouchableOpacity style={styles.alreadyHaveAnAccountWrapper} onPress={()=>navigation.navigate('Register')}>
               <Text style={styles.alreadyHaveAnAccountText}>Don't have an account?</Text>
               <Text style={styles.alreadyHaveAnAccountTextSingIn}>Register</Text>
@@ -256,15 +162,10 @@ const styles = StyleSheet.create({
       alignItems:'center',
       marginTop:20,
     },
-    googleButtonGradient:{
-        borderRadius:10,
-        elevation:10,
-        
-    },
+    
     continueWithText:{
         color: "black",
         textAlign: "center",
-        
         fontSize: 18,
         fontFamily: "Inter_200ExtraLight",
         marginBottom:20,
@@ -275,7 +176,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: "Inter_200ExtraLight",
         marginTop:15,
-       
     },
     alreadyHaveAnAccountTextSingIn:{
       color: "black",
@@ -288,7 +188,7 @@ const styles = StyleSheet.create({
     googleAppleButtonWrapper:{
         flexDirection:'row',
         justifyContent:'space-between',
-        marginHorizontal:'20%'
+        marginHorizontal:'20%',
     },
     googleButtonText:{
         fontSize:18,
@@ -311,105 +211,94 @@ const styles = StyleSheet.create({
         marginRight:5,
     },
     googleButton:{
-        backgroundColor:'transparent',
         height:30,
         width:100,
         justifyContent:'center',
         alignItems:'center',
-        borderRadius:10,
         flexDirection:'row',
+
     },
     appleButton:{
         height:30,
         width:100,
         justifyContent:'center',
         alignItems:'center',
-        borderRadius:10,
         flexDirection:'row',
     },
     divider:{
         height: StyleSheet.hairlineWidth,
         backgroundColor:'black',
-        marginTop:15,
+        marginTop:50,
         marginHorizontal:70,
         marginBottom:10,
     },
   gradientButton: {
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 10,
-    height:40,
-    width:'100%'
+    borderRadius: 40,
+    height:30,
+    flexDirection:'row'
   },
   registerButtonWrapper:{
-    backgroundColor:'transparent',
-    height:40,
-    justifyContent:'center',
-    marginHorizontal:'10%',
+    marginHorizontal:40,
     marginTop:20,
   },
   registerButtonEmail: {
-    backgroundColor: "rgba(115,114,253,0.7)",
+    backgroundColor: "rgba(115,114,253,1)",
+    flexDirection:'row',
+    justifyContent:'center',
+    alignItems:'center',
     height:40,
     borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    elevation:20,
   },
   bottomWrapper: {
     flex: 1,
-    backgroundColor: "rgba(157,154,253,0.9)",
+    backgroundColor: "black",
   },
   registerButtonTextEmail: {
     color: "white",
     fontSize: 22,
     fontFamily: "Inter_400Regular",
   },
-  
   inputWrapper: {
     flexDirection: "row",
   },
   inputEmailIcon: {
-    height: 25,
-    width: 25,
+    height: 20,
+    width: 20,
+    marginRight:20,
   },
   emailTextTitle: {
     marginLeft: "15%",
     marginTop: 20,
     marginBottom: 5,
+    flexDirection:'row',
   },
-  emailInput: {
-    color: "black",
-    marginTop: 4,
-    textAlign: "center",
-  },
-  textInputWrapper: {
-    flexDirection: "row",
-    marginHorizontal: "5%",
-    justifyContent: "center",
-  },
-  textInputWrapperEmail: {
-    backgroundColor: "rgba(209,209,253,1)",
-    height: 35,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "rgba(115,114,253,0.7)",
-    alignItems: "center",
-    width: "80%",
-    marginRight: 10,
-    elevation:10,
-  },
+
+  emailInput:{
+    height:60,
+    marginHorizontal:20,
+},
+  
+  textInputWrapperEmail:{  
+    backgroundColor:'#DDE6ED',
+    height:45,
+    marginHorizontal:40,
+    borderRadius:15,
+    flexDirection:'row',
+    justifyContent:'space-between',
+    alignItems:'center'
+},
+  
   registerTextSub: {
     color: "black",
     textAlign: "center",
-
     fontSize: 18,
     fontFamily: "Inter_200ExtraLight",
   },
   registerText: {
     color: "black",
     textAlign: "center",
-
     marginTop: 16,
     fontSize: 36,
     fontFamily: "Inter_300Light",
@@ -429,7 +318,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   topWrapper: {
-    backgroundColor: "rgba(157,154,253,0.9)",
+    backgroundColor: "black",
     paddingTop: 10,
   },
   gradientContainer: {
@@ -445,7 +334,7 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 40,
     fontFamily: "Inter_200ExtraLight",
-    color: "black",
+    color: "white",
     textAlign:'center',
   },
 });

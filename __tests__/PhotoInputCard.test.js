@@ -2,9 +2,11 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import PhotoInputCard from '../components/PhotoInputCard';
 import MainContext from '../context/MainContext';
+import AppPreferencesContext from '../context/AppPreferencesContext';
 
 describe('PhotoInputCard', () => {
   it('renders the card when isInputCardsVisible is true', () => {
+    const contextValue = { theme: { fontColor: { primaryFontColor: '#000' } }, language: 'en' };
     const mockContext = {
       takeAndCropPhoto: jest.fn(),
       pickImage: jest.fn(),
@@ -13,11 +15,13 @@ describe('PhotoInputCard', () => {
 
     const { getByText } = render(
       <MainContext.Provider value={mockContext}>
+        <AppPreferencesContext.Provider value={contextValue}>
         <PhotoInputCard />
+      </AppPreferencesContext.Provider>
       </MainContext.Provider>
     );
 
-    expect(getByText('Take photo or Select image')).toBeTruthy();
+    expect(getByText('Take a Photo')).toBeTruthy();
   });
 
   it('does not render the card when isInputCardsVisible is false', () => {
@@ -26,14 +30,17 @@ describe('PhotoInputCard', () => {
       pickImage: jest.fn(),
       isInputCardsVisible: false,
     };
+    const contextValue = { theme: { fontColor: { primaryFontColor: '#000' } }, language: 'en' };
 
     const { queryByText } = render(
       <MainContext.Provider value={mockContext}>
+        <AppPreferencesContext.Provider value={contextValue}>
         <PhotoInputCard />
+        </AppPreferencesContext.Provider>
       </MainContext.Provider>
     );
 
-    expect(queryByText('Take photo or Select image')).toBeNull();
+    expect(queryByText('Choose an Image')).toBeNull();
   });
 
   it('calls takeAndCropPhoto when Take Photo button is pressed', () => {
@@ -42,14 +49,17 @@ describe('PhotoInputCard', () => {
       pickImage: jest.fn(),
       isInputCardsVisible: true,
     };
+    const contextValue = { theme: { fontColor: { primaryFontColor: '#000' } }, language: 'en' };
 
     const { getByText } = render(
       <MainContext.Provider value={mockContext}>
+        <AppPreferencesContext.Provider value={contextValue}>
         <PhotoInputCard />
+        </AppPreferencesContext.Provider>
       </MainContext.Provider>
     );
 
-    fireEvent.press(getByText('Take Photo'));
+    fireEvent.press(getByText('Take a Photo'));
     expect(mockContext.takeAndCropPhoto).toHaveBeenCalled();
   });
 
@@ -59,14 +69,17 @@ describe('PhotoInputCard', () => {
       pickImage: jest.fn(),
       isInputCardsVisible: true,
     };
+    const contextValue = { theme: { fontColor: { primaryFontColor: '#000' } }, language: 'en' };
 
     const { getByText } = render(
       <MainContext.Provider value={mockContext}>
+        <AppPreferencesContext.Provider value={contextValue}>
         <PhotoInputCard />
+        </AppPreferencesContext.Provider>
       </MainContext.Provider>
     );
 
-    fireEvent.press(getByText('Select Image'));
+    fireEvent.press(getByText('Choose an Image'));
     expect(mockContext.pickImage).toHaveBeenCalled();
   });
 });

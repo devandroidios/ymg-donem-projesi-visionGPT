@@ -1,3 +1,4 @@
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/QA5O9x4M)
 
 
 
@@ -17,25 +18,27 @@ The prompt that currently only for answering the lesson questions.
 
 ## New Updates
 - VisionGPT upgraded to GPT-3.5 Turbo
-- Now the texts in the picture and the answer can be copied
-- Google Authentication 
+- Chat with VisionGPT 
+- Dark/Light Theme
+- English/Turkish Language
 
 
 ## About the Project
 
 This mobile application is developed using React Native. The app enables users to take a photo with their camera or select an existing photo from their device. Then, the text in the photo is detected and read using OCR (Optical Character Recognition) technology and sent to the ChatGPT API. The ChatGPT API accepts the text as a prompt and returns a response to the user.
 
-## Screenshot
+## Screenshot (Dark/Light Theme)
+![newGitHubSS](https://github.com/Iskenderun-Technical-University/ymg-donem-projesi-visionGPT/assets/83416622/8d74564d-5747-4069-9d28-2c7b628c77ee)
 
-![fourscreennew](https://user-images.githubusercontent.com/83416622/236878638-36e1b0f4-67e4-4370-a957-cc2e8741b114.png)
 
 
-## Screen recording
-![Screen Recording 2023-05-10 at 03 25 55](https://github.com/mert-donmez/VisionGPT/assets/83416622/6ca3521c-4a1c-4fac-88f1-f62ff760cbd3)
+
+## Screen Recording
+![newScreenRecording](https://github.com/Iskenderun-Technical-University/ymg-donem-projesi-visionGPT/assets/83416622/36722ddc-e21e-476f-a3b4-b4ce16e8c745)
 
 
 ## Roadmap
-
+- ### ✅ Project Start (May 2, 2023)
 - ✅ Design user interface (Done)
 - ✅ Use iOS and Android camera (Done)
 - ✅ Detect text in images with OCR (Done)
@@ -43,18 +46,26 @@ This mobile application is developed using React Native. The app enables users t
 - ✅ Sessions, Firebase database and user actions (Done)
 - ✅ First .apk build (Done)
 - ✅ GPT3 to GPT3.5 upgrade (Done)
-- ✅ Register and Login with Google auth (Done) 
-- 🔄 Register with Apple and Email (soon)
-- 🔄 UI improvements, Language and Theme settings,text input (soon)
-- 🔄 Different prompts and tabs for different applications in one App (soon)
-- 🔄 Detect objects in images (soon)
-- 🔄 Communicate detected objects to the user with voice and NLP (soon)
-- 🔄 🚀 Publish on App Store and Play Store (soon)
+- ✅ Register and Login with Google and Apple auth (Removed) 
+- ✅ Register with Email (Removed)
+- ✅ Language and theme settings (Done)
+- ✅ Text input (Done)
+- ✅ Login as anonymous user (Done)
+- ### ✅ Project Finished (May 31, 2023)
+- 🎨 UI improvements (continually)
+
+- ### Later
+- 🔄 Google Admob ads and some restrictions (soon)
+- 🔄 In-app purchase (soon)
+- 🎯 Publish on App Store and Play Store
+
+
 
 ## Features
 
 - Photo capturing and selection functionality
 - Reading text from photos using OCR
+- Chat with Bot
 - Communicating with the ChatGPT API
 - Displaying responses from the ChatGPT API
 
@@ -101,8 +112,5 @@ If you would like to contribute to this project, please check out the [Contribut
 
 
 ## UML
-
-![newUml](https://user-images.githubusercontent.com/83416622/236022745-8909715e-596e-4872-a185-79b06a3e9ea6.png)
-
-
+![new-white-uml](https://github.com/Iskenderun-Technical-University/ymg-donem-projesi-visionGPT/assets/83416622/47d76682-83fe-4fa3-832c-34294bcb0d67)
 

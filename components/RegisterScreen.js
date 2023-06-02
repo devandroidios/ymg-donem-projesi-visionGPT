@@ -6,6 +6,7 @@ import {
   Image,
   SafeAreaView,
   TextInput,
+  ScrollView,
   TouchableOpacity,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -18,10 +19,17 @@ import {
   Inter_600SemiBold,
   Inter_400Regular,
 } from "@expo-google-fonts/inter";
-import BouncyCheckbox from "react-native-bouncy-checkbox";
+import AuthContext from "../context/AuthContext";
+import { MaterialIcons } from "@expo/vector-icons";
+import secretTokens from "../tokens/SecretTokens";
+import AppPreferencesContext from "../context/AppPreferencesContext";
+import MainContext from "../context/MainContext";
 
-const RegisterScreen = ({ navigation }) => {
-const [isCheckboxChecked,setIsCheckboxChecked] = useState(false);
+const RegisterScreen = () => {
+  const { loginAnonymously, loading } = useContext(AuthContext);
+  const { theme, language,setLanguage,changeLanguageFromCache,appPreferences } = useContext(AppPreferencesContext);
+  
+  const {isTester,buttonDisabled} = useContext(MainContext);
 
   let [fontsLoaded] = useFonts({
     Inter_900Black,
@@ -34,359 +42,224 @@ const [isCheckboxChecked,setIsCheckboxChecked] = useState(false);
   if (!fontsLoaded) {
     return null;
   }
-  
 
-  const alertFunc = ()=>{
-    if (isCheckboxChecked === false){
-        alert('You accepted terms of use');
-        setIsCheckboxChecked(true);
+  const startLogin = () => {
+    loginAnonymously();
+  };
+
+  const changeLanguage = ()=>{
+    if(language === 'English'){
+      setLanguage(appPreferences.language.secondaryLanguage);
+      changeLanguageFromCache(appPreferences.language.secondaryLanguage);
+    }else{
+      setLanguage(appPreferences.language.primaryLanguage);
+      changeLanguageFromCache(appPreferences.language.primaryLanguage);
     }
-    else{
-        setIsCheckboxChecked(false);
-    }
-
-
   }
-
 
   return (
     <>
       <StatusBar style="dark" />
-      <SafeAreaView style={styles.topWrapper}>
-        <View style={styles.imageAndTitleWrapper}>
-          <Image
-            source={require("../assets/cuttedicon.png")}
-            style={styles.image}
-          />
-          <Text style={styles.welcomeText}>Hello!</Text>
-        </View>
-      </SafeAreaView>
-      <View style={styles.bottomWrapper}>
-        <View style={styles.gradientContainer}>
-          <LinearGradient
-            colors={["white", "rgba(157,154,253,1)"]}
-            style={styles.gradient}
-          >
-            <Text style={styles.registerText}>Register</Text>
-            <Text style={styles.registerTextSub}>Get started free</Text>
-
-            <View style={styles.registerInfoWrapper}>
-              <View style={styles.emailTextTitle}>
-                <Text style={styles.emailText}>Email</Text>
-              </View>
-
-              <View style={styles.textInputWrapper}>
-                <View style={styles.textInputWrapperEmail}>
-                  <TextInput
-                    inputMode="email"
-                    style={styles.emailInput}
-                    placeholderTextColor={"grey"}
-                    placeholder="Your Email adress"
-                  />
-                </View>
+      <View style={styles.gradientContainer}>
+        {loading ? (
+          <>
+            <LinearGradient colors={["black", "black"]} style={styles.gradient}>
+              <Text style={[styles.registerText, { color: "white" }]}>
+                {language ==='English' ? 'Getting\nReady...' : 'Hazirlaniyor...'}
+              </Text>
+              <View style={{ justifyContent: "center", alignItems: "center" }}>
                 <Image
-                  source={require("../assets/emailicon.png")}
-                  style={styles.inputEmailIcon}
+                  source={require("../assets/newVisionGPTIcon.png")}
+                  style={{ width: 250, height: 250 }}
                 />
               </View>
-
-              <View style={styles.emailTextTitle}>
-                <Text style={styles.emailText}>Password</Text>
-              </View>
-
-              <View style={styles.textInputWrapper}>
-                <View style={styles.textInputWrapperEmail}>
-                  <TextInput
-                    style={styles.emailInput}
-                    secureTextEntry
-                    placeholderTextColor={"grey"}
-                    placeholder="Your password"
-                  />
-                </View>
-                <Image
-                  source={require("../assets/passwordicon.png")}
-                  style={styles.inputEmailIcon}
-                />
-                
-              </View>
-              <View style={styles.checkBox}>
-              <BouncyCheckbox textStyle={{ fontFamily: "Inter_200ExtraLight" }} text='I Accept the Terms of Use' fillColor="purple" onPress={alertFunc}/>
-
-              </View>
-              
-
-              <View style={styles.registerButtonWrapper}>
-                <TouchableOpacity style={styles.registerButtonEmail}>
-                  <LinearGradient
-                    colors={[        
-                    "rgba(115,114,253,1)",
-                    '#2A2F4F',
-                    ]}
-                    start={[0,0]}
-                    end={[1,1]}
-                    style={styles.gradientButton}
-                  >
-                    <Text style={styles.registerButtonTextEmail}>Register</Text>
-                  </LinearGradient>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.divider}/>
-              <Text style={styles.continueWithText}>Or continue with </Text>
-
-              <View style={styles.googleAppleButtonWrapper}>
-              <LinearGradient
-                    colors={[        
-                        'white',
-                        "white",
-                    ]}
-                    start={[0,0]}
-                    end={[1,1]}
-                    style={styles.googleButtonGradient}
-                  >
-
-                    <TouchableOpacity style={styles.googleButton}>
-                        <Image source={require('../assets/googleicon.png')} style={styles.googleicon}/>
-                        <Text style={styles.googleButtonText}>Google</Text>
-                        </TouchableOpacity>
-
-                        </LinearGradient>
+              <Text style={[styles.registerTextSub, { color: "white" }]}>
+                {language ==='English' ? "It won't take long" : "Uzun surmeyecek"}
+              </Text>
+            </LinearGradient>
+          </>
+        ) : (
+          <>
+            <LinearGradient colors={["white", "white"]} style={styles.gradient}>
+              <View style={styles.langButtonWrapper}>
+              <TouchableOpacity onPress={changeLanguage} style={{backgroundColor:'white',borderWidth:2,borderColor:'black',borderRadius:20,flexDirection:'row',justifyContent:'center',alignItems:'center',alignContent:'center'}}>
+              <MaterialIcons
+                    name="language"
+                    color={"black"}
+                    size={30}
                     
-                        <LinearGradient
-                    colors={[        
-                        'black',
-                        "black",
-                    ]}
-                    start={[0,0]}
-                    end={[1,1]}
-                    style={styles.googleButtonGradient}
-                  >
-                        
-                    <TouchableOpacity style={styles.appleButton}>
-                        <Image source={require('../assets/appleiconwhitenew.png')} resizeMode="contain" style={styles.appleicon}/>
-                        <Text style={styles.appleButtonText}>Apple</Text>
-                        </TouchableOpacity>
-                        
-                        </LinearGradient>
-                        
+                  />
+                <Text style={{textAlign:'center',color:'black',fontSize:15,marginHorizontal:5,marginVertical:5}}>{language ==='English' ? 'English' : 'Turkce'}</Text>
+                <MaterialIcons
+                    name="cached"
+                    color={"black"}
+                    size={20}
+                    
+                  />
                 
-            
-              </View>
-              
-              <TouchableOpacity style={styles.alreadyHaveAnAccountWrapper} onPress={()=>navigation.navigate('Login')}>
-              <Text style={styles.alreadyHaveAnAccountText}>Already have an account ?</Text>
-              <Text style={styles.alreadyHaveAnAccountTextSingIn}>Login</Text>
               </TouchableOpacity>
+              </View>
+              <Text style={[styles.registerText, { color: "black" }]}>
+                {language === 'English' ? 'Welcome !' : 'Hosgeldiniz !'}
+              </Text>
+              <View style={{ justifyContent: "center", alignItems: "center" }}>
+                <Image
+                  source={require("../assets/newVisionGPTIcon.png")}
+                  style={{ width: 250, height: 250 }}
+                />
+              </View>
+              <Text style={[styles.registerTextSub, { color: "grey" }]}>
+                {language === 'English' ? 'You can scan text\nwith camera or chat with' : 'Metinleri kamera ile\ntarayin veya sohbet edin.'}
+                
+              </Text>
+              <Text
+                style={[
+                  styles.registerTextSub,
+                  { color: "black", fontSize: 36, marginBottom: 20 },
+                ]}
+              >
+                VisionGPT
+              </Text>
+              <View style={styles.registerButtonWrapper}>
+                <TouchableOpacity
+                  style={styles.registerButtonEmail}
+                  onPress={startLogin}
+                  disabled={buttonDisabled}
+                >
+                  <Text
+                    style={[styles.registerButtonTextEmail, { color: "white" }]}
+                  >
+                    {language =='English' ? 'Start' : 'Basla'}
+                  </Text>
+                  <MaterialIcons
+                    name="arrow-forward-ios"
+                    color={"white"}
+                    size={18}
+                  />
+                </TouchableOpacity>
+                <View>
+                  <Text
+                    style={{
+                      fontSize: 10,
+                      textAlign: "center",
+                      color: "black",
+                      fontWeight: "300",
+                      marginTop: 10,
+                    }}
+                  >
+                    {language ==='English' ? "By clicking Start, you agree to our Terms of Use.\n We're committed to respecting your rights and privacy." : "Başlat'a tıklayarak Kullanım Koşullarımızı kabul etmiş olursunuz.\nHaklarınıza ve gizliliğinize saygı göstermeyi taahhüt ediyoruz."}
+
+                    
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => alert(language ==='English' ? secretTokens.termsOfUse : secretTokens.termsOfUse_tr)}
+                    style={{ marginBottom: 40 }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 10,
+                        textAlign: "center",
+                        color: "black",
+                        fontWeight: "500",
+                        marginTop: 10,
+                        marginBottom: 10,
+                      }}
+                    >
+                      {language ==='English' ? 'Terms of Use' : 'Kullanim Kosullari'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              {
+                isTester && (
+                  <TouchableOpacity
+                onPress={() => alert(language ==='English' ? secretTokens.tester_message.english : secretTokens.tester_message.turkish)}
+                style={{
+                  elevation: 20,
+                  justifyContent: "center",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: 50,
+                  alignContent: "center",
+                  backgroundColor: "#B70404",
+                  marginHorizontal: 100,
+                  borderRadius: 10,
+                  height: 40,
+                }}
+              >
+                <MaterialIcons name="bug-report" color={"white"} size={20} />
+                <Text style={{color:'white',fontSize:18}}>{language === 'English' ? 'Test User' : 'Test Kullanicisi'}</Text>
+              </TouchableOpacity>)
+
+              }
               
-            </View>
-          </LinearGradient>
-        </View>
+            </LinearGradient>
+          </>
+        )}
       </View>
     </>
   );
 };
+//align lang button to right
 
 const styles = StyleSheet.create({
-    checkBox:{
-        marginTop:15,
-        marginLeft:'10%'
-    },
-    alreadyHaveAnAccountWrapper:{
-      flexDirection:'row',
-      justifyContent:'center',
-      alignItems:'center',
-      marginTop:20,
-    },
-    googleButtonGradient:{
-        borderRadius:10,
-        elevation:10,
-        
-    },
-    continueWithText:{
-        color: "black",
-        textAlign: "center",
-        
-        fontSize: 18,
-        fontFamily: "Inter_200ExtraLight",
-        marginBottom:20,
-    },
-    alreadyHaveAnAccountText:{
-        color: "black",
-        textAlign: "center",
-
-        fontSize: 16,
-        fontFamily: "Inter_200ExtraLight",
-        marginTop:15,
-       
-    },
-    alreadyHaveAnAccountTextSingIn:{
-      color: "black",
-      textAlign: "center",
-      marginLeft: 16,
-      fontSize: 18,
-      fontFamily: "Inter_400Regular",
-      marginTop:15,
-    },
-    googleAppleButtonWrapper:{
-        flexDirection:'row',
-        justifyContent:'space-between',
-        marginHorizontal:'20%'
-    },
-    googleButtonText:{
-        fontSize:18,
-        color:'black',
-        fontFamily:"Inter_200ExtraLight",
-    },
-    appleButtonText:{
-        fontSize:18,
-        color:'white',
-        fontFamily:"Inter_200ExtraLight",
-    },
-    appleicon:{
-        width:20,
-        height:20,
-        marginRight:5,
-    },
-    googleicon:{
-        width:20,
-        height:20,
-        marginRight:5,
-    },
-    googleButton:{
-        backgroundColor:'transparent',
-        height:30,
-        width:100,
-        justifyContent:'center',
-        alignItems:'center',
-        borderRadius:10,
-        flexDirection:'row',
-    },
-    appleButton:{
-        height:30,
-        width:100,
-        justifyContent:'center',
-        alignItems:'center',
-        borderRadius:10,
-        flexDirection:'row',
-    },
-    divider:{
-        height: StyleSheet.hairlineWidth,
-        backgroundColor:'black',
-        marginTop:15,
-        marginHorizontal:70,
-        marginBottom:10,
-    },
-  gradientButton: {
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 10,
-    height:40,
-    width:'100%'
-  },
-  registerButtonWrapper:{
-    backgroundColor:'transparent',
-    height:40,
+  langButtonWrapper:{
+    alignItems:'flex-end',
+    marginRight:16,    
     justifyContent:'center',
-    marginHorizontal:'10%',
-    marginTop:20,
+   
+  },
+  registerButtonWrapper: {
+    marginHorizontal: 40,
   },
   registerButtonEmail: {
-    backgroundColor: "rgba(115,114,253,0.7)",
-    height:40,
-    borderRadius: 10,
+    backgroundColor: "#52006A",
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    elevation:20,
+    height: 60,
+    borderRadius: 10,
   },
-  bottomWrapper: {
-    flex: 1,
-    backgroundColor: "rgba(157,154,253,0.9)",
-  },
+
   registerButtonTextEmail: {
-    color: "white",
-    fontSize: 22,
+    fontSize: 27,
     fontFamily: "Inter_400Regular",
   },
-  
-  inputWrapper: {
-    flexDirection: "row",
-  },
-  inputEmailIcon: {
-    height: 25,
-    width: 25,
-  },
-  emailTextTitle: {
-    marginLeft: "15%",
-    marginTop: 20,
-    marginBottom: 5,
-  },
-  emailInput: {
-    color: "black",
-    marginTop: 4,
-    textAlign: "center",
-  },
-  textInputWrapper: {
-    flexDirection: "row",
-    marginHorizontal: "5%",
-    justifyContent: "center",
-  },
-  textInputWrapperEmail: {
-    backgroundColor: "rgba(209,209,253,1)",
-    height: 35,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "rgba(115,114,253,0.7)",
-    alignItems: "center",
-    width: "80%",
-    marginRight: 10,
-    elevation:10,
-  },
-  registerTextSub: {
-    color: "black",
-    textAlign: "center",
 
-    fontSize: 18,
-    fontFamily: "Inter_200ExtraLight",
+  registerTextSub: {
+    textAlign: "center",
+    marginHorizontal: 16,
+    fontSize: 24,
+    fontFamily: "Inter_900Black",
   },
   registerText: {
-    color: "black",
+    color: "white",
     textAlign: "center",
+    fontSize: 50,
+    fontFamily: "Inter_900Black",
+  },
 
-    marginTop: 16,
-    fontSize: 36,
-    fontFamily: "Inter_300Light",
-  },
-  image: {
-    height: 200,
-    width: 200,
-  },
-  emailText: {
-    color: "black",
-    fontFamily: "Inter_200ExtraLight",
-    fontSize: 15,
-  },
   imageAndTitleWrapper: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
   },
   topWrapper: {
-    backgroundColor: "rgba(157,154,253,0.9)",
+    backgroundColor: "black",
     paddingTop: 10,
   },
   gradientContainer: {
     flex: 1,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
     overflow: "hidden",
   },
   gradient: {
     flex: 1,
+    justifyContent: "center",
   },
-
   welcomeText: {
     fontSize: 60,
     fontFamily: "Inter_200ExtraLight",
-    color: "black",
+    color: "white",
   },
 });
 
